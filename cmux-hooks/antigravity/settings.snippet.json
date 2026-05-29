@@ -1,0 +1,7 @@
+{
+  "hooks": {
+    "PreToolUse": [{ "command": "~/.antigravity/hooks/cmux-notify.sh" }],
+    "PostToolUse": [{ "command": "~/.antigravity/hooks/cmux-notify.sh" }],
+    "Stop": [{ "command": "~/.antigravity/hooks/cmux-notify.sh" }]
+  }
+}

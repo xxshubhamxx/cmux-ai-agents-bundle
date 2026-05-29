@@ -1,0 +1,9 @@
+hooks:
+  pre_tool_call:
+    - command: ~/.hermes/hooks/cmux-notify.sh
+  post_tool_call:
+    - command: ~/.hermes/hooks/cmux-notify.sh
+  approval_request:
+    - command: ~/.hermes/hooks/cmux-notify.sh
+  session_complete:
+    - command: ~/.hermes/hooks/cmux-notify.sh

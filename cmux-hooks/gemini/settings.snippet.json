@@ -1,0 +1,6 @@
+{
+  "hooks": {
+    "PreToolUse": [{ "command": "~/.gemini/hooks/cmux-notify.sh" }],
+    "Stop": [{ "command": "~/.gemini/hooks/cmux-notify.sh" }]
+  }
+}

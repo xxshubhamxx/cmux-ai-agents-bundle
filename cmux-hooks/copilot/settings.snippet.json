@@ -1,0 +1,6 @@
+{
+  "hooks": {
+    "PreToolUse": [{ "command": "~/.copilot/hooks/cmux-notify.sh" }],
+    "Stop": [{ "command": "~/.copilot/hooks/cmux-notify.sh" }]
+  }
+}

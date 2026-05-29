@@ -1,0 +1,6 @@
+{
+  "hooks": {
+    "beforeShellExecution": [{ "command": "~/.cursor/hooks/cmux-notify.sh" }],
+    "Stop": [{ "command": "~/.cursor/hooks/cmux-notify.sh" }]
+  }
+}

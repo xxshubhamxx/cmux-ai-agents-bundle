@@ -1,0 +1,5 @@
+{
+  "hooks": {
+    "session.complete": [{ "command": "~/.pi/hooks/cmux-notify.sh" }]
+  }
+}

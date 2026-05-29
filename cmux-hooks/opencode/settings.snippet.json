@@ -1,0 +1,7 @@
+{
+  "hooks": {
+    "tool.before": [{ "command": "~/.opencode/hooks/cmux-notify.sh" }],
+    "tool.after": [{ "command": "~/.opencode/hooks/cmux-notify.sh" }],
+    "session.stop": [{ "command": "~/.opencode/hooks/cmux-notify.sh" }]
+  }
+}
