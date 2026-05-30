@@ -1,6 +1,0 @@
-{
-  "hooks": {
-    "PreToolUse": [{ "command": "~/.factory/hooks/cmux-notify.sh" }],
-    "Stop": [{ "command": "~/.factory/hooks/cmux-notify.sh" }]
-  }
-}

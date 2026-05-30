@@ -1,6 +1,0 @@
-{
-  "hooks": {
-    "thread.message": [{ "command": "~/.amp/hooks/cmux-notify.sh" }],
-    "thread.complete": [{ "command": "~/.amp/hooks/cmux-notify.sh" }]
-  }
-}

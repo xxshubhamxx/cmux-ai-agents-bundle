@@ -1,6 +1,0 @@
-{
-  "hooks": {
-    "PreToolUse": [{ "command": "~/.qoder/hooks/cmux-notify.sh" }],
-    "Stop": [{ "command": "~/.qoder/hooks/cmux-notify.sh" }]
-  }
-}

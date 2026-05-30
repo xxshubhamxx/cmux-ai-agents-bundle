@@ -1,5 +1,0 @@
-{
-  "hooks": {
-    "session.end": [{ "command": "~/.rovo/hooks/cmux-notify.sh" }]
-  }
-}

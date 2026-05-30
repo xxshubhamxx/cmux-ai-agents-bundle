@@ -1,6 +1,0 @@
-{
-  "hooks": {
-    "PreToolUse": [{ "command": "~/.codebuddy/hooks/cmux-notify.sh" }],
-    "Stop": [{ "command": "~/.codebuddy/hooks/cmux-notify.sh" }]
-  }
-}

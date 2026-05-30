@@ -87,7 +87,7 @@ Install all detected hooks at once: `cmux hooks setup`
 - [Official OSC 9 / 99 / 777 notification protocol](https://cmux.com/docs/notifications)
 - [cmux notify CLI](https://cmux.com/docs/api) — `cmux notify --title "..." --body "..."`
 - [Claude Code hook example](https://cmux.com/docs/notifications#manual-claude-code-hook)
-- [`cmux-hooks/` in this repo](../cmux-hooks) — pre-baked scripts for every agent above
+- [`cmux-skill/` in this repo](../cmux-skill) — drop-in skill that wires any agent into cmux
 
 ## Browser automation
 
@@ -138,9 +138,7 @@ Useful next to cmux:
 
 ## In this bundle
 
-- [`../cmux-hooks/`](../cmux-hooks) — pre-baked hooks for every agent above
-- [`../cmux-skills-pack/`](../cmux-skills-pack) — 5 community-contributed skills
-- [`../cmux-cheatsheet/`](../cmux-cheatsheet) — 30 CLI commands + 50 shortcuts on one page
+- [`../cmux-skill/`](../cmux-skill) — drop-in skill that teaches any agent to drive cmux
 - [`../cmux-recipes/`](../cmux-recipes) — 20 copy-paste socket-API + CLI snippets
 
 ---

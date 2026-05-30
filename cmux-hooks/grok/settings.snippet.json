@@ -1,6 +1,0 @@
-{
-  "hooks": {
-    "PreToolUse": [{ "command": "~/.grok/hooks/cmux-notify.sh" }],
-    "Stop": [{ "command": "~/.grok/hooks/cmux-notify.sh" }]
-  }
-}

@@ -13,9 +13,7 @@ If you have ever opened five cmux workspaces, lost track of which agent owns whi
 | Folder | What it is |
 |---|---|
 | [`awesome-cmux/`](./awesome-cmux) | Curated index of every cmux resource — docs, skills, agents, blog posts, demos. The bookmark you keep open. |
-| [`cmux-hooks/`](./cmux-hooks) | Ready-to-run notification + session-resume hooks for 15 AI coding agents (Claude Code, Codex, Grok, Cursor, Gemini, Hermes, Copilot, Factory…). One `install.sh` detects what you have. |
-| [`cmux-skills-pack/`](./cmux-skills-pack) | Five new skills your agents can use: parallel PR review, test-while-coding, deploy watcher, debugger split, research trio. Installs via `npx skills add`. |
-| [`cmux-cheatsheet/`](./cmux-cheatsheet) | One-page cheat sheet: the 30 CLI commands and 50 shortcuts you actually use, plus the focus-stealing rules pinned on top. PDF-ready. |
+| [`cmux-skill/`](./cmux-skill) | Drop-in skill that teaches any AI coding agent how to drive cmux from the CLI or socket — workspaces, panes, surfaces, browser automation, notifications, and the non-disruptive focus rules. |
 | [`cmux-recipes/`](./cmux-recipes) | 20 numbered, copy-paste recipes (CLI + Python + Bash) for the socket API: notify-on-build-fail, flash-on-test-pass, screenshot a browser surface, run three agents on one PR, and more. |
 
 ---
@@ -26,14 +24,12 @@ If you have ever opened five cmux workspaces, lost track of which agent owns whi
 git clone https://github.com/pawel-cell/cmux-ai-agents-bundle.git
 cd cmux-ai-agents-bundle
 
-# Install hooks for whichever agents you have installed
-./cmux-hooks/install.sh
+# Wire the cmux skill into Claude Code (or your agent of choice)
+mkdir -p ~/.claude/skills/cmux
+cp cmux-skill/SKILL.md ~/.claude/skills/cmux/SKILL.md
 
-# Install the skills pack (so your agents learn the new workflows)
-npx skills add pawel-cell/cmux-ai-agents-bundle --path cmux-skills-pack -g -y
-
-# Read the cheat sheet
-open cmux-cheatsheet/CHEATSHEET.md
+# Browse the recipes
+ls cmux-recipes/
 ```
 
 > Requires cmux v0.64.0 or newer. Install: `brew tap manaflow-ai/cmux && brew install --cask cmux`
@@ -42,13 +38,11 @@ open cmux-cheatsheet/CHEATSHEET.md
 
 ## Why this exists
 
-cmux is powerful but the docs are deep. There are 60+ socket methods, 7 skills, 14+ supported agents, 100+ keyboard shortcuts, and a set of non-obvious "don't steal the user's focus" rules that you only learn by breaking them.
+cmux is powerful but the docs are deep. There are 60+ socket methods, a sidebar metadata system, an embedded WKWebView browser, 100+ keyboard shortcuts, and a set of non-obvious "don't steal the user's focus" rules that you only learn by breaking them.
 
 This repo collapses that into:
 
-- one cheat sheet,
-- one hooks installer,
-- one skills pack,
+- one skill your agents can actually load,
 - one recipes folder you can `grep` into,
 - one awesome-list to find everything else.
 
@@ -58,12 +52,7 @@ Stars and PRs welcome.
 
 ## Get the rest
 
-This is the public, free version. The full **cmux AI Agents Bundle** also includes:
-
-- the printable PDF cheat sheet (designed, not just markdown rendered),
-- a 5-day email walkthrough that teaches one skill per day,
-- the private "non-disruptive automation" playbook,
-- bonus templates: PR-review prompt, debugger-split prompt, deploy-watcher config.
+This is the public, free version. The full **cmux AI Agents Bundle** at [davidondrej.com](https://davidondrej.com) also includes a guided walkthrough video, prompt templates, and the private "non-disruptive automation" playbook.
 
 → **Get it free at [davidondrej.com](https://davidondrej.com)**
 

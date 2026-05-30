@@ -1,7 +1,0 @@
-{
-  "hooks": {
-    "PreToolUse": [{ "command": "~/.codex/hooks/cmux-notify.sh" }],
-    "PermissionRequest": [{ "command": "~/.codex/hooks/cmux-notify.sh" }],
-    "Stop": [{ "command": "~/.codex/hooks/cmux-notify.sh" }]
-  }
-}
