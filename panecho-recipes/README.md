@@ -1,6 +1,6 @@
-# cmux Recipes
+# Panecho Recipes
 
-20 copy-paste, self-contained snippets for the cmux CLI + socket API. Each folder is one recipe. Each recipe has a 5-line `README.md` and a runnable `recipe.sh` (and a Python version where useful).
+20 copy-paste, self-contained snippets for the Panecho CLI + socket API. Panecho ships the **same `cmux` CLI** as upstream, so each recipe calls `cmux …` directly and runs verbatim. Each folder is one recipe with a short `README.md` and a runnable `recipe.sh` (and a Python version where useful).
 
 Browse the list:
 
@@ -36,6 +36,8 @@ chmod +x recipe.sh
 ```
 
 Each recipe is independent and short. Read `recipe.sh` before running.
+
+> The recipes detect the env via `CMUX_WORKSPACE_ID` / `CMUX_SOCKET_PATH` — these keep the `CMUX_` prefix in Panecho for drop-in compatibility. Recipes that reach the network (e.g. browser, `vercel logs`) run as **user-initiated** actions and are not blocked by Panecho's privacy-mode egress guard, which only fail-closes the app's own telemetry/update traffic.
 
 ## License
 

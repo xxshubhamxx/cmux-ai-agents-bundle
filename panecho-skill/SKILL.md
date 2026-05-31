@@ -1,29 +1,29 @@
 ---
-name: cmux
-description: Drive the cmux native macOS terminal app from CLI or socket — workspaces, panes, surfaces, browser automation, notifications, sidebar metadata, session restore. Use whenever the user mentions cmux, wants to control terminal layout from an agent, automate browser panels on macOS, send notifications/flashes to the sidebar, or integrate an AI agent with cmux hooks. macOS only (14.0+).
+name: panecho
+description: Drive the Panecho native macOS terminal app (the privacy-hardened fork of cmux) from CLI or socket — workspaces, panes, surfaces, browser automation, notifications, sidebar metadata, session restore. Use whenever the user mentions Panecho or cmux, wants to control terminal layout from an agent, automate browser panels on macOS, send notifications/flashes to the sidebar, or integrate an AI agent with Panecho/cmux hooks. macOS only (14.0+). Note: privacy mode is ON by default and disables update/analytics/crash/remote-auth network paths.
 ---
 
-# cmux Control
+# Panecho Control
 
-cmux is a native macOS terminal app for running multiple AI coding agents in parallel. It exposes a CLI (`cmux`) and a Unix-socket JSON-RPC API (`/tmp/cmux.sock`) for full topology and browser control.
+Panecho is a privacy-hardened fork of cmux — a native macOS terminal app for running multiple AI coding agents in parallel. It ships the **same `cmux` CLI** and the **same Unix-socket JSON-RPC API** (`/tmp/cmux.sock`) as upstream, so every command below works verbatim. Only the app bundle (`Panecho.app`, `io.panecho.app`) and URL scheme (`panecho`) are rebranded — and **privacy mode is enabled by default** (see "Privacy Mode — What Changes" below).
 
 ## Core Concepts
 
-- **Window** — top-level macOS cmux window
+- **Window** — top-level macOS Panecho window
 - **Workspace** — sidebar tab within a window (one git branch / project context)
 - **Pane** — split region inside a workspace
 - **Surface** — tab inside a pane (terminal or browser)
 
 Handles default to short refs (`workspace:2`, `pane:1`, `surface:7`); UUIDs accepted as input. Add `--id-format uuids|both` for full IDs in output.
 
-## Detect cmux in a Shell
+## Detect Panecho in a Shell
 
 ```bash
-[ -S "${CMUX_SOCKET_PATH:-/tmp/cmux.sock}" ] || exit 0   # bail if not in cmux
-[ -n "${CMUX_WORKSPACE_ID:-}" ] && echo "inside cmux surface"
+[ -S "${CMUX_SOCKET_PATH:-/tmp/cmux.sock}" ] || exit 0   # bail if not in Panecho
+[ -n "${CMUX_WORKSPACE_ID:-}" ] && echo "inside a Panecho surface"
 ```
 
-Injected env vars in every cmux-spawned terminal: `CMUX_WORKSPACE_ID`, `CMUX_SURFACE_ID`, `CMUX_SOCKET_PATH`, `CMUX_PORT`. **Always anchor automation to `CMUX_WORKSPACE_ID`** — the visually focused workspace may not be the agent's caller workspace.
+Injected env vars in every Panecho-spawned terminal: `CMUX_WORKSPACE_ID`, `CMUX_SURFACE_ID`, `CMUX_SOCKET_PATH`, `CMUX_PORT` (env var names keep the `CMUX_` prefix for drop-in compatibility). **Always anchor automation to `CMUX_WORKSPACE_ID`** — the visually focused workspace may not be the agent's caller workspace.
 
 ## Fast Start — Topology
 
@@ -93,6 +93,8 @@ cmux browser "$S" console list | errors list | screenshot
 
 **Not supported by WKWebView** (return `not_supported`): viewport emulation, geolocation/offline emulation, trace recording, network route interception, raw input injection.
 
+> **Privacy-mode note:** the browser loads whatever URL you point it at — WKWebView page loads are **not** subject to Panecho's `URLSession` egress guard. Treat browser surfaces as normal outbound network. The guard only fail-closes the app's own `URLSession` traffic (telemetry/update/auth), not pages you choose to open.
+
 ## Markdown Viewer
 
 ```bash
@@ -110,19 +112,40 @@ cmux reload-config        # hot-reload cmux.json + ~/.config/ghostty/config (Cmd
 ```
 
 Locations:
-- cmux settings: `~/.config/cmux/cmux.json` (canonical). Project-local override: `.cmux/cmux.json` or `./cmux.json`.
+- Panecho settings: `~/.config/cmux/cmux.json` (canonical — path keeps the `cmux` name for drop-in compatibility). Project-local override: `.cmux/cmux.json` or `./cmux.json`.
 - Terminal rendering (font, cursor, theme, scrollback, opacity, blur): `~/.config/ghostty/config` — NOT cmux.json.
 
-Before editing `cmux.json`, copy it to a timestamped `.bak` next to it so the user can revert. Schema: `https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux.schema.json`.
+Before editing `cmux.json`, copy it to a timestamped `.bak` next to it so the user can revert. Schema (tracks upstream cmux, identical for Panecho): `https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux.schema.json`.
+
+## Privacy Mode — What Changes
+
+Panecho runs with privacy mode **on by default**. An agent must expect these paths to be inert and handle the errors gracefully rather than retrying:
+
+| Subsystem | Behavior in Panecho | What the agent sees |
+|---|---|---|
+| Auto-update (Sparkle) | Disabled — no feed URL, no auto/manual check | `cmux`/UI update commands report a disabled state |
+| Analytics (PostHog) | Compiled out — SDK not linked | nothing; no-op |
+| Crash reporting (Sentry) | Compiled out — SDK not linked | nothing; no-op |
+| Remote auth sign-in | Gated off | sign-in throws a "privacy mode" error |
+| Cloud/VM provisioning | Off by default | `cmux vm …` returns a privacy-mode error |
+| Remote-daemon download | Gated off | falls back to offline/local build |
+| Outbound `URLSession` to non-loopback hosts | Fail-closed by an egress guard | request fails with a "blocked by privacy mode" error |
+
+**Still fully functional (user-initiated):** local socket control, terminal panes, SSH workspaces you start, browser tabs you open, notifications, layout/topology commands. Privacy mode does not sandbox child processes (`ssh`, `ghostty`, your shells), WKWebView page loads, or raw sockets — only the app's own `URLSession` egress.
+
+**Agent rule:** never assume update/analytics/cloud/remote-auth calls will succeed. If a feature returns a privacy-mode error, surface it to the user — do not loop retrying.
 
 ## Agent Hooks & Install
 
 ```bash
-brew tap manaflow-ai/cmux && brew install --cask cmux
-sudo ln -sf /Applications/cmux.app/Contents/Resources/bin/cmux /usr/local/bin/cmux
+# Install Panecho.app from the fork's releases (no Homebrew cask):
+#   https://github.com/xxshubhamxx/cmux-panecho/releases/latest  (asset: panecho-macos.zip)
+ditto -x -k ~/Downloads/panecho-macos.zip /tmp/panecho && ditto /tmp/panecho/Panecho.app /Applications/Panecho.app
+sudo ln -sf /Applications/Panecho.app/Contents/Resources/bin/cmux /usr/local/bin/cmux
+
 cmux hooks setup                                             # all detected agents
 cmux hooks setup codex|grok|antigravity|opencode             # specific agent
-npx skills add manaflow-ai/cmux -g -y                        # install cmux skills for agents
+npx skills add manaflow-ai/cmux -g -y                        # upstream cmux skills (apply to Panecho too)
 ```
 
 Native session-resume supported for: Claude Code, Codex, Grok, OpenCode, Pi, Amp, Cursor CLI, Gemini, Antigravity, Rovo Dev, Hermes, Copilot, CodeBuddy, Factory, Qoder.
@@ -135,13 +158,13 @@ Native session-resume supported for: Claude Code, Codex, Grok, OpenCode, Pi, Amp
 echo '{"id":"1","method":"workspace.list","params":{}}' | nc -U /tmp/cmux.sock
 ```
 
-Method prefixes: `system.*`, `window.*`, `workspace.*`, `pane.*`, `surface.*`, `notification.*`, `browser.*`. Full list and Python client example in `references/socket-api.md`.
+Method prefixes: `system.*`, `window.*`, `workspace.*`, `pane.*`, `surface.*`, `notification.*`, `browser.*`. Enumerate available methods in the current build with `cmux capabilities --json`.
 
-Access modes: `cmuxOnly` (default — only cmux-spawned processes), `automation` (any local process), `password`, `allowAll` (unsafe). If you hit `Failed to connect to socket`, you're likely an external process under `cmuxOnly` — switch mode in Settings > Automation or run from inside a cmux terminal.
+Access modes: `cmuxOnly` (default — only Panecho-spawned processes), `automation` (any local process), `password`, `allowAll` (unsafe). If you hit `Failed to connect to socket` / `Broken pipe`, you're likely an external process under `cmuxOnly` — switch mode in Settings > Automation or run from inside a Panecho terminal.
 
 ## Critical Rules — Non-Disruptive Automation
 
-These rules come from the `cmux-workspace` skill and prevent agents from yanking the user's focus:
+These rules prevent agents from yanking the user's focus:
 
 1. **Anchor to `CMUX_WORKSPACE_ID`.** Never assume the visually focused workspace is the target.
 2. **Never call focus-changing verbs speculatively.** `select-workspace`, `focus-pane`, `focus-panel`, `focus-surface` only on explicit user request. Pass `--focus false` whenever available.
@@ -149,12 +172,14 @@ These rules come from the `cmux-workspace` skill and prevent agents from yanking
 4. **Right-side helper pane pattern.** Reuse an existing non-caller helper pane if present; otherwise create exactly one right-side pane.
 5. **Never send input to surfaces you don't own.** Only target surfaces in the caller's workspace unless the user explicitly asks for cross-workspace routing.
 6. **Check surface health before routing input** when UI state may be stale: `cmux surface-health`.
+7. **Respect privacy mode.** Treat update/analytics/cloud/remote-auth failures as expected, not as bugs to retry around.
 
 ## Common Pitfalls
 
-- **Pi/Pi-like socket connection failures from external processes** → default `cmuxOnly` mode; either run inside a cmux terminal or change socket mode.
-- **macOS only.** No Linux/Windows port.
+- **Socket connection failures from external processes** → default `cmuxOnly` mode; either run inside a Panecho terminal or change socket mode.
+- **macOS only.** No Linux/Windows port. Apple Silicon (arm64) builds.
 - **WKWebView ≠ CDP.** Don't expect Playwright-equivalent network mocking or viewport emulation.
+- **Privacy mode ≠ no network.** Browser/SSH/child processes still reach the network; only the app's own telemetry/update `URLSession` calls are blocked.
 - **Resume strips sensitive env vars.** Re-inject tokens at resume time if the agent needs them.
 - **Skills snapshot at app start.** Edits to skill files require a restart of the consuming agent.
 - **Legacy v1 socket payloads (`{"command":...}`) rejected.** Use v2 JSON-RPC only.

@@ -1,6 +1,8 @@
-# Awesome cmux
+# Awesome Panecho
 
-> A curated list of everything around [cmux](https://cmux.com) — the native macOS terminal built for running multiple AI coding agents in parallel.
+> A curated list of everything around **[Panecho](https://github.com/xxshubhamxx/cmux-panecho)** — the privacy-hardened fork of [cmux](https://github.com/manaflow-ai/cmux), the native macOS terminal built for running multiple AI coding agents in parallel.
+
+Panecho is a drop-in fork: same `cmux` CLI, same socket API, telemetry/analytics/crash/auto-update **disabled by default**. Most upstream cmux docs and skills below apply unchanged — they're included here because they're genuinely useful and Panecho tracks upstream closely.
 
 Contributions welcome — open a PR or an issue.
 
@@ -8,9 +10,11 @@ Contributions welcome — open a PR or an issue.
 
 ## Contents
 
-- [Official](#official)
-- [Install](#install)
-- [Skills (Official)](#skills-official)
+- [Panecho (this fork)](#panecho-this-fork)
+- [Install Panecho](#install-panecho)
+- [Privacy](#privacy)
+- [Upstream cmux — official](#upstream-cmux--official)
+- [Skills](#skills)
 - [Supported AI agents](#supported-ai-agents)
 - [Hooks & integrations](#hooks--integrations)
 - [Browser automation](#browser-automation)
@@ -23,7 +27,40 @@ Contributions welcome — open a PR or an issue.
 
 ---
 
-## Official
+## Panecho (this fork)
+
+- [GitHub: xxshubhamxx/cmux-panecho](https://github.com/xxshubhamxx/cmux-panecho) — the Panecho fork source
+- [Latest release](https://github.com/xxshubhamxx/cmux-panecho/releases/latest) — `panecho-macos.zip` (Apple Silicon, arm64)
+- [All releases](https://github.com/xxshubhamxx/cmux-panecho/releases) — versioned (`panecho-vX.Y.Z`) + rolling `panecho-nightly`
+- Identity: app `Panecho.app`, bundle id `io.panecho.app`, URL scheme `panecho`
+- CLI: still `cmux` (drop-in compatible) — `cmux version` reports the upstream base version + Panecho commit
+
+## Install Panecho
+
+No Homebrew cask — install from the fork's release artifact:
+
+```bash
+# Download panecho-macos.zip from https://github.com/xxshubhamxx/cmux-panecho/releases/latest
+ditto -x -k ~/Downloads/panecho-macos.zip /tmp/panecho
+ditto /tmp/panecho/Panecho.app /Applications/Panecho.app
+sudo ln -sf "/Applications/Panecho.app/Contents/Resources/bin/cmux" /usr/local/bin/cmux
+cmux version
+```
+
+Or, from a checked-out fork: `./scripts/install-panecho.sh`. Requires macOS 14.0+.
+
+## Privacy
+
+The reason Panecho exists. By default:
+
+- **Off:** auto-update checks (Sparkle, no feed URL), PostHog analytics (SDK not linked), Sentry crash reporting (SDK not linked), remote auth sign-in, cloud/VM provisioning, remote-daemon downloads.
+- **Fail-closed:** a `URLSession` egress guard rejects non-loopback HTTP(S)/WS traffic from the app itself.
+- **Out of scope by design:** WKWebView page loads, child processes (`ssh`, `ghostty`, your shells), raw sockets. Privacy mode is not a full network sandbox — pair with an OS egress firewall for provable isolation.
+- Verify a build yourself: `otool -L Panecho.app/Contents/MacOS/cmux | grep -i 'sentry\|posthog'` (expect nothing) and `PlistBuddy -c 'Print :SUFeedURL' Panecho.app/Contents/Info.plist` (expect missing).
+
+## Upstream cmux — official
+
+Panecho is based on cmux; these upstream resources describe the shared engine and behavior.
 
 - [cmux.com](https://cmux.com) — homepage
 - [cmux.com/docs](https://cmux.com/docs) — getting started
@@ -34,21 +71,14 @@ Contributions welcome — open a PR or an issue.
 - [cmux.com/docs/session-restore](https://cmux.com/docs/session-restore) — session restore, supported agents, resume commands
 - [cmux.com/docs/skills](https://cmux.com/docs/skills) — skills system
 - [cmux.com/docs/custom-commands](https://cmux.com/docs/custom-commands) — actions, layouts, surface definitions
-- [GitHub: manaflow-ai/cmux](https://github.com/manaflow-ai/cmux) — source repo
+- [GitHub: manaflow-ai/cmux](https://github.com/manaflow-ai/cmux) — upstream source repo
 - [GitHub: CHANGELOG.md](https://raw.githubusercontent.com/manaflow-ai/cmux/main/CHANGELOG.md) — full version history
 - [DeepWiki: manaflow-ai/cmux](https://deepwiki.com/manaflow-ai/cmux) — auto-generated architecture overview
 - [Mintlify socket-api reference](https://manaflow-ai-cmux.mintlify.app/automation/socket-api) — full JSON-RPC method list
 
-## Install
+## Skills
 
-- DMG: [latest release](https://github.com/manaflow-ai/cmux/releases/latest/download/cmux-macos.dmg)
-- Homebrew: `brew tap manaflow-ai/cmux && brew install --cask cmux`
-- Nightly builds: separate `cmux NIGHTLY` app, see GitHub releases
-- CLI symlink: `sudo ln -sf "/Applications/cmux.app/Contents/Resources/bin/cmux" /usr/local/bin/cmux`
-
-## Skills (Official)
-
-Install all: `npx skills add manaflow-ai/cmux -g -y`
+Install upstream skills (they apply to Panecho too): `npx skills add manaflow-ai/cmux -g -y`. Or use the Panecho-tuned skill in this bundle ([`../panecho-skill`](../panecho-skill)) which adds the privacy-mode rules.
 
 - [cmux Core](https://raw.githubusercontent.com/manaflow-ai/cmux/main/skills/cmux/SKILL.md) — windows, workspaces, panes, surfaces, focus, moves
 - [cmux Workspace](https://raw.githubusercontent.com/manaflow-ai/cmux/main/skills/cmux-workspace/SKILL.md) — caller-workspace-scoped automation, non-disruptive rules
@@ -60,7 +90,7 @@ Install all: `npx skills add manaflow-ai/cmux -g -y`
 
 ## Supported AI agents
 
-cmux ships first-class session-restore + hook integration for these:
+Panecho ships the same first-class session-restore + hook integration as cmux for these:
 
 | Agent | Resume command | Hook feed |
 |---|---|---|
@@ -87,26 +117,29 @@ Install all detected hooks at once: `cmux hooks setup`
 - [Official OSC 9 / 99 / 777 notification protocol](https://cmux.com/docs/notifications)
 - [cmux notify CLI](https://cmux.com/docs/api) — `cmux notify --title "..." --body "..."`
 - [Claude Code hook example](https://cmux.com/docs/notifications#manual-claude-code-hook)
-- [`cmux-skill/` in this repo](../cmux-skill) — drop-in skill that wires any agent into cmux
+- [`../panecho-skill/`](../panecho-skill) — drop-in skill that wires any agent into Panecho
 
 ## Browser automation
 
-cmux includes an embedded WKWebView browser with a scriptable API (ported from agent-browser).
+Panecho includes the same embedded WKWebView browser with a scriptable API (ported from agent-browser).
 
 - [Browser commands reference](https://raw.githubusercontent.com/manaflow-ai/cmux/main/skills/cmux-browser/references/commands.md)
 - [Browser skill](https://raw.githubusercontent.com/manaflow-ai/cmux/main/skills/cmux-browser/SKILL.md)
 - Known WKWebView limitations (return `not_supported`): viewport emulation, offline mode, trace recording, network interception, raw input injection
+- Privacy note: WKWebView page loads are **not** gated by the egress guard — browser surfaces reach the network normally.
 
 ## Configuration
 
-- [cmux.json schema](https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux.schema.json)
+- [cmux.json schema](https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux.schema.json) (Panecho tracks the upstream schema)
 - Config locations:
-  - `~/.config/cmux/cmux.json` (canonical)
+  - `~/.config/cmux/cmux.json` (canonical — path keeps the `cmux` name for drop-in compatibility)
   - `~/.config/ghostty/config` (terminal rendering, font, theme)
   - `.cmux/cmux.json` (project-local override)
 - Reload without restart: `cmux reload-config` or `⌘⇧,`
 
 ## Articles & write-ups
+
+These cover upstream cmux; the mechanics apply to Panecho.
 
 - [Teaching Coding Agents to Drive cmux](https://bounds.dev) — Jesse Bounds
 - [cmux: the terminal built for AI coding agents](https://dev.to/neuraldownload/cmux-the-terminal-built-for-ai-coding-agents-3l7h) — DEV.to overview
@@ -116,31 +149,30 @@ cmux includes an embedded WKWebView browser with a scriptable API (ported from a
 ## Videos & demos
 
 - [David Ondrej — cmux walkthrough](https://youtube.com/@davidondrej) — full setup + 5-agent workflow demo
-- [Manaflow founders demo](https://x.com/lawrencecchen) — feature drops on X
-- *Open a PR to add more*
+- *Open a PR to add Panecho-specific demos*
 
 ## Community
 
-- [GitHub Discussions](https://github.com/manaflow-ai/cmux/discussions)
-- [GitHub Issues](https://github.com/manaflow-ai/cmux/issues) — bug reports, feature requests
-- founders@manaflow.com — commercial license inquiries
+- [Panecho issues](https://github.com/xxshubhamxx/cmux-panecho/issues) — fork bug reports, feature requests
+- [Upstream cmux Discussions](https://github.com/manaflow-ai/cmux/discussions)
+- [Upstream cmux Issues](https://github.com/manaflow-ai/cmux/issues)
 
 ## Companion tools
 
-Useful next to cmux:
+Useful next to Panecho:
 
-- [Ghostty](https://ghostty.org) — the rendering engine cmux is built on (use its config for fonts/theme)
+- [Ghostty](https://ghostty.org) — the rendering engine cmux/Panecho is built on (use its config for fonts/theme)
 - [Claude Code](https://docs.anthropic.com/claude-code) — Anthropic's terminal agent
 - [Codex CLI](https://github.com/openai/codex) — OpenAI's terminal agent
 - [Hermes Agent](https://hermes-agent.nousresearch.com) — open-source agent runtime with cmux integration
-- [npx skills](https://www.npmjs.com/package/skills) — Vercel's skills installer (cmux ships skills via this)
+- [npx skills](https://www.npmjs.com/package/skills) — Vercel's skills installer
 - [tmux](https://github.com/tmux/tmux) — the OG terminal multiplexer (cmux is the GUI-native take)
 
 ## In this bundle
 
-- [`../cmux-skill/`](../cmux-skill) — drop-in skill that teaches any agent to drive cmux
-- [`../cmux-recipes/`](../cmux-recipes) — 20 copy-paste socket-API + CLI snippets
+- [`../panecho-skill/`](../panecho-skill) — drop-in skill that teaches any agent to drive Panecho (with privacy-mode rules)
+- [`../panecho-recipes/`](../panecho-recipes) — 20 copy-paste socket-API + CLI snippets
 
 ---
 
-Maintained at [davidondrej.com](https://davidondrej.com). PRs welcome.
+Adapted for Panecho from the original Awesome cmux list. PRs welcome.
