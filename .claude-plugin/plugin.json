@@ -1,0 +1,13 @@
+{
+  "name": "panecho",
+  "description": "Drive the Panecho native macOS terminal (privacy-hardened fork of cmux) from Claude Code — workspaces, panes, surfaces, browser automation, notifications, sidebar metadata, session restore, and the privacy-mode rules agents must respect. Ships the Panecho control skill; pair with the panecho-recipes/ folder for copy-paste socket-API snippets.",
+  "version": "1.0.0",
+  "author": {
+    "name": "xxshubhamxx",
+    "url": "https://github.com/xxshubhamxx"
+  },
+  "homepage": "https://github.com/xxshubhamxx/cmux-ai-agents-bundle",
+  "repository": "https://github.com/xxshubhamxx/cmux-ai-agents-bundle",
+  "license": "MIT",
+  "keywords": ["panecho", "cmux", "terminal", "macos", "automation", "privacy", "agents", "browser"]
+}

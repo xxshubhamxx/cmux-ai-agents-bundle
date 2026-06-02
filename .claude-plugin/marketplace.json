@@ -1,0 +1,17 @@
+{
+  "name": "panecho",
+  "owner": {
+    "name": "xxshubhamxx",
+    "url": "https://github.com/xxshubhamxx"
+  },
+  "metadata": {
+    "description": "Panecho AI Agents Bundle — install the Panecho skill (drive the privacy-hardened cmux macOS terminal from Claude Code) plus a folder of copy-paste socket-API recipes."
+  },
+  "plugins": [
+    {
+      "name": "panecho",
+      "source": "./",
+      "description": "Teaches Claude Code to drive Panecho (the privacy-hardened fork of cmux): workspaces, panes, surfaces, browser automation, notifications, sidebar metadata, session restore, and the privacy-mode rules agents must respect. macOS 14+."
+    }
+  ]
+}

@@ -5,7 +5,7 @@ description: Drive the Panecho native macOS terminal app (the privacy-hardened f
 
 # Panecho Control
 
-Panecho is a privacy-hardened fork of cmux — a native macOS terminal app for running multiple AI coding agents in parallel. It ships the **same `cmux` CLI** and the **same Unix-socket JSON-RPC API** (`/tmp/cmux.sock`) as upstream, so every command below works verbatim. Only the app bundle (`Panecho.app`, `io.panecho.app`) and URL scheme (`panecho`) are rebranded — and **privacy mode is enabled by default** (see "Privacy Mode — What Changes" below).
+Panecho is a privacy-hardened fork of cmux — a native macOS terminal app for running multiple AI coding agents in parallel. It ships the **same `cmux` CLI** and the **same Unix-socket JSON-RPC API** (at `$CMUX_SOCKET_PATH`) as upstream, so every command below works verbatim. Only the app bundle (`Panecho.app`, `io.panecho.app`) and URL scheme (`panecho`) are rebranded — and **privacy mode is enabled by default** (see "Privacy Mode — What Changes" below).
 
 ## Core Concepts
 
@@ -19,7 +19,7 @@ Handles default to short refs (`workspace:2`, `pane:1`, `surface:7`); UUIDs acce
 ## Detect Panecho in a Shell
 
 ```bash
-[ -S "${CMUX_SOCKET_PATH:-/tmp/cmux.sock}" ] || exit 0   # bail if not in Panecho
+[ -n "${CMUX_SOCKET_PATH:-}" ] && [ -S "$CMUX_SOCKET_PATH" ] || exit 0   # bail if not inside a Panecho surface
 [ -n "${CMUX_WORKSPACE_ID:-}" ] && echo "inside a Panecho surface"
 ```
 
@@ -32,7 +32,7 @@ cmux identify --json                              # who am I (window/workspace/p
 cmux tree                                         # full hierarchy
 cmux list-workspaces --json
 cmux list-panes --workspace "$CMUX_WORKSPACE_ID"
-cmux list-surfaces --workspace "$CMUX_WORKSPACE_ID"
+cmux list-pane-surfaces --pane pane:1                       # surfaces (tabs) within a pane
 
 cmux new-workspace --name "feature-x" --cwd /path/to/repo
 cmux new-pane --workspace "$CMUX_WORKSPACE_ID" --type terminal --direction right --focus false
@@ -48,8 +48,8 @@ cmux close-surface --surface surface:7
 ```bash
 cmux send "echo hi\n"                                       # focused terminal
 cmux send-key "ctrl+c"                                       # enter|tab|esc|backspace|arrows|ctrl+x|shift+tab
-cmux send-surface --surface surface:7 "npm run build\n"      # specific surface
-cmux send-key-surface --surface surface:7 enter
+cmux send --surface surface:7 "npm run build\n"              # specific surface
+cmux send-key --surface surface:7 enter
 ```
 
 ## Notifications & Sidebar Metadata
@@ -98,7 +98,7 @@ cmux browser "$S" console list | errors list | screenshot
 ## Markdown Viewer
 
 ```bash
-cmux markdown open plan.md --direction right                 # live-watching renderer
+cmux markdown open plan.md --focus false                     # live-watching renderer (non-disruptive)
 cmux open file.pdf                                           # auto-routes to right viewer
 ```
 
@@ -152,10 +152,10 @@ Native session-resume supported for: Claude Code, Codex, Grok, OpenCode, Pi, Amp
 
 ## Socket API (advanced)
 
-`/tmp/cmux.sock` — Unix socket, JSON-RPC v2. Use for tight loops where subprocess spawn cost matters; otherwise prefer the CLI.
+The socket path is injected into every Panecho surface as `$CMUX_SOCKET_PATH`. Panecho keeps it at `~/Library/Application Support/cmux/cmux-<uid>.sock` (NOT the legacy upstream `/tmp/cmux.sock`); the live path is also written to `~/Library/Application Support/cmux/last-socket-path`, which is what the `cmux` CLI auto-discovers. Unix socket, JSON-RPC v2 — use for tight loops where subprocess spawn cost matters; otherwise prefer the CLI.
 
 ```bash
-echo '{"id":"1","method":"workspace.list","params":{}}' | nc -U /tmp/cmux.sock
+echo '{"id":"1","method":"workspace.list","params":{}}' | nc -U "$CMUX_SOCKET_PATH"
 ```
 
 Method prefixes: `system.*`, `window.*`, `workspace.*`, `pane.*`, `surface.*`, `notification.*`, `browser.*`. Enumerate available methods in the current build with `cmux capabilities --json`.

@@ -1,8 +1,24 @@
 #!/usr/bin/env python3
-"""Minimal cmux JSON-RPC client. Usage: python3 recipe.py"""
+"""Minimal Panecho/cmux JSON-RPC client. Usage: python3 recipe.py"""
 import json, os, socket
 
-SOCK = os.environ.get("CMUX_SOCKET_PATH", "/tmp/cmux.sock")
+
+def socket_path():
+    # Panecho injects CMUX_SOCKET_PATH into every surface. Outside a surface,
+    # fall back to the live path the app records, then the legacy /tmp location.
+    p = os.environ.get("CMUX_SOCKET_PATH")
+    if p:
+        return p
+    last = os.path.expanduser("~/Library/Application Support/cmux/last-socket-path")
+    try:
+        with open(last) as f:
+            return f.read().strip()
+    except OSError:
+        return "/tmp/cmux.sock"
+
+
+SOCK = socket_path()
+
 
 def rpc(method, params=None, req_id="1"):
     payload = {"id": req_id, "method": method, "params": params or {}}
@@ -10,6 +26,7 @@ def rpc(method, params=None, req_id="1"):
         s.connect(SOCK)
         s.sendall(json.dumps(payload).encode() + b"\n")
         return json.loads(s.recv(65536).decode())
+
 
 if __name__ == "__main__":
     print("ping:", rpc("system.ping"))

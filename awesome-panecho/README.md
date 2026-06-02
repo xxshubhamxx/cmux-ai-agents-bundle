@@ -78,7 +78,7 @@ Panecho is based on cmux; these upstream resources describe the shared engine an
 
 ## Skills
 
-Install upstream skills (they apply to Panecho too): `npx skills add manaflow-ai/cmux -g -y`. Or use the Panecho-tuned skill in this bundle ([`../panecho-skill`](../panecho-skill)) which adds the privacy-mode rules.
+Install upstream skills (they apply to Panecho too): `npx skills add manaflow-ai/cmux -g -y`. Or install this bundle's Panecho-tuned skill ([`../skills/panecho`](../skills/panecho/SKILL.md)) — in Claude Code: `/plugin marketplace add xxshubhamxx/cmux-ai-agents-bundle` then `/plugin install panecho@panecho`. It adds the privacy-mode rules the upstream skill omits.
 
 - [cmux Core](https://raw.githubusercontent.com/manaflow-ai/cmux/main/skills/cmux/SKILL.md) — windows, workspaces, panes, surfaces, focus, moves
 - [cmux Workspace](https://raw.githubusercontent.com/manaflow-ai/cmux/main/skills/cmux-workspace/SKILL.md) — caller-workspace-scoped automation, non-disruptive rules
@@ -117,7 +117,7 @@ Install all detected hooks at once: `cmux hooks setup`
 - [Official OSC 9 / 99 / 777 notification protocol](https://cmux.com/docs/notifications)
 - [cmux notify CLI](https://cmux.com/docs/api) — `cmux notify --title "..." --body "..."`
 - [Claude Code hook example](https://cmux.com/docs/notifications#manual-claude-code-hook)
-- [`../panecho-skill/`](../panecho-skill) — drop-in skill that wires any agent into Panecho
+- [`../skills/panecho/`](../skills/panecho/SKILL.md) — drop-in skill that wires any agent into Panecho (install via `/plugin marketplace add xxshubhamxx/cmux-ai-agents-bundle`)
 
 ## Browser automation
 
@@ -170,7 +170,7 @@ Useful next to Panecho:
 
 ## In this bundle
 
-- [`../panecho-skill/`](../panecho-skill) — drop-in skill that teaches any agent to drive Panecho (with privacy-mode rules)
+- [`../skills/panecho/`](../skills/panecho/SKILL.md) — drop-in skill that teaches any agent to drive Panecho (with privacy-mode rules)
 - [`../panecho-recipes/`](../panecho-recipes) — 20 copy-paste socket-API + CLI snippets
 
 ---
