@@ -10,3 +10,10 @@ chmod +x recipe.sh
 ```
 
 See [`recipe.sh`](./recipe.sh) for the full script.
+
+Inside a Panecho surface this authenticates automatically. From an external shell,
+export `CMUX_SOCKET_PASSWORD` (the password saved in Settings) first, or
+`workspace list` / `workspace rename` fail with a broken-pipe error.
+
+`workspace rename` (canonical) replaces the legacy `rename-workspace`, which still
+works but prints a one-time deprecation hint.

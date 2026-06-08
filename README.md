@@ -15,7 +15,7 @@ If you have ever opened five Panecho workspaces, lost track of which agent owns 
 | [`.claude-plugin/`](./.claude-plugin) | Plugin + marketplace manifests. This repo **is** a Claude Code marketplace — `/plugin marketplace add` reads these. |
 | [`skills/panecho/`](./skills/panecho) | The installable **Panecho skill** — teaches Claude Code (or any agent) to drive Panecho from the CLI or socket: workspaces, panes, surfaces, browser automation, notifications, sidebar metadata, the non-disruptive focus rules, and the privacy-mode caveats agents need to know. |
 | [`awesome-panecho/`](./awesome-panecho) | Curated index of every Panecho + upstream cmux resource — releases, docs, skills, agents. The bookmark you keep open. |
-| [`panecho-recipes/`](./panecho-recipes) | 20 numbered, copy-paste recipes (CLI + Python + Bash) for the socket API: notify-on-build-fail, flash-on-test-pass, screenshot a browser surface, run three agents on one PR, and more. |
+| [`panecho-recipes/`](./panecho-recipes) | 23 numbered, copy-paste recipes (CLI + Python + Bash) for the socket API: notify-on-build-fail, flash-on-test-pass, screenshot a browser surface, run three agents on one PR, and more. |
 
 > Panecho ships the **same `cmux` CLI binary** as upstream, so every command and recipe here works verbatim — `cmux identify`, `cmux new-pane`, the `CMUX_*` env vars, the JSON-RPC socket. Only the app, bundle id (`io.panecho.app`), and URL scheme (`panecho`) are rebranded.
 
@@ -76,10 +76,10 @@ ditto -x -k ~/Downloads/panecho-macos.zip /tmp/panecho && \
 # 3. Symlink the CLI (the binary is still named `cmux`)
 sudo ln -sf "/Applications/Panecho.app/Contents/Resources/bin/cmux" /usr/local/bin/cmux
 
-cmux version    # -> cmux 0.64.x (…) [<commit>]
+cmux version    # -> cmux 0.64.14 (94) [<commit>]
 ```
 
-> Requires macOS 14.0+ (Apple Silicon, arm64). The release is Developer ID-signed and notarized, so Gatekeeper opens it without the "unidentified developer" block.
+> Requires macOS 14.0+ (Apple Silicon, arm64). The current release (`panecho-v0.64.14`) is Developer ID-signed (Browserstack Inc), notarized, and stapled, so Gatekeeper opens it without the "unidentified developer" block.
 
 ---
 

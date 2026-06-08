@@ -1,7 +1,7 @@
 #!/bin/bash
 # Returns 0 if inside Panecho/cmux, 1 otherwise.
 # Detection anchors on the env Panecho injects into every surface — NOT a fixed
-# socket path (Panecho's socket lives under ~/Library/Application Support/cmux/).
+# socket path (Panecho's control socket lives at ~/.local/state/cmux/cmux.sock).
 SOCK="${CMUX_SOCKET_PATH:-}"
 [ -n "$SOCK" ] && [ -S "$SOCK" ] || { echo "Not inside Panecho/cmux"; exit 1; }
 [ -n "${CMUX_WORKSPACE_ID:-}" ] || { echo "No CMUX_WORKSPACE_ID"; exit 1; }

@@ -10,3 +10,7 @@ chmod +x recipe.sh
 ```
 
 See [`recipe.sh`](./recipe.sh) for the full script.
+
+Running from cron is an external shell with no surface context, so export
+`CMUX_SOCKET_PASSWORD` (the password saved in Settings) before the run — otherwise
+`workspace list` and `trigger-flash` fail with a broken-pipe error.

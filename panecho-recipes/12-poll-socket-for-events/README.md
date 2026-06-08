@@ -1,6 +1,6 @@
 # Poll the socket for surface output
 
-Read the last N lines from a surface buffer via socket — useful for build-watchers and CI integrations.
+Poll the last N lines of a surface buffer over the control socket with `cmux read-screen` — useful for build-watchers and CI integrations.
 
 ## Run
 

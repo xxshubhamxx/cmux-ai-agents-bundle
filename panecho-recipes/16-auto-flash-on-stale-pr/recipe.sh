@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euo pipefail
-cmux list-workspaces --json | jq -c '.result.workspaces[]' | while read -r ws; do
+cmux workspace list --json | jq -c '.result.workspaces[]' | while read -r ws; do
   REF=$(echo "$ws" | jq -r '.workspace_ref')
   PR=$(echo "$ws" | jq -r '.pr_url // ""')
   [ -z "$PR" ] && continue

@@ -5,16 +5,16 @@ import json, os, socket
 
 def socket_path():
     # Panecho injects CMUX_SOCKET_PATH into every surface. Outside a surface,
-    # fall back to the live path the app records, then the legacy /tmp location.
+    # fall back to the live path the app records, then the XDG default.
     p = os.environ.get("CMUX_SOCKET_PATH")
     if p:
         return p
-    last = os.path.expanduser("~/Library/Application Support/cmux/last-socket-path")
+    last = os.path.expanduser("~/.local/state/cmux/last-socket-path")
     try:
         with open(last) as f:
             return f.read().strip()
     except OSError:
-        return "/tmp/cmux.sock"
+        return os.path.expanduser("~/.local/state/cmux/cmux.sock")
 
 
 SOCK = socket_path()

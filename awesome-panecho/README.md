@@ -14,6 +14,7 @@ Contributions welcome — open a PR or an issue.
 - [Install Panecho](#install-panecho)
 - [Privacy](#privacy)
 - [Upstream cmux — official](#upstream-cmux--official)
+- [Docs in the CLI](#docs-in-the-cli)
 - [Skills](#skills)
 - [Supported AI agents](#supported-ai-agents)
 - [Hooks & integrations](#hooks--integrations)
@@ -30,7 +31,7 @@ Contributions welcome — open a PR or an issue.
 ## Panecho (this fork)
 
 - [GitHub: xxshubhamxx/cmux-panecho](https://github.com/xxshubhamxx/cmux-panecho) — the Panecho fork source
-- [Latest release](https://github.com/xxshubhamxx/cmux-panecho/releases/latest) — `panecho-macos.zip` (Apple Silicon, arm64)
+- [Latest release](https://github.com/xxshubhamxx/cmux-panecho/releases/latest) — current: [`panecho-v0.64.14`](https://github.com/xxshubhamxx/cmux-panecho/releases/tag/panecho-v0.64.14); `panecho-macos.zip` (Apple Silicon, arm64), Developer ID signed (Browserstack Inc, Team `YQ5FZQ855D`), notarized + stapled
 - [All releases](https://github.com/xxshubhamxx/cmux-panecho/releases) — versioned (`panecho-vX.Y.Z`) + rolling `panecho-nightly`
 - Identity: app `Panecho.app`, bundle id `io.panecho.app`, URL scheme `panecho`
 - CLI: still `cmux` (drop-in compatible) — `cmux version` reports the upstream base version + Panecho commit
@@ -75,6 +76,20 @@ Panecho is based on cmux; these upstream resources describe the shared engine an
 - [GitHub: CHANGELOG.md](https://raw.githubusercontent.com/manaflow-ai/cmux/main/CHANGELOG.md) — full version history
 - [DeepWiki: manaflow-ai/cmux](https://deepwiki.com/manaflow-ai/cmux) — auto-generated architecture overview
 - [Mintlify socket-api reference](https://manaflow-ai-cmux.mintlify.app/automation/socket-api) — full JSON-RPC method list
+
+## Docs in the CLI
+
+Panecho ships canonical docs offline. `cmux docs <topic>` prints the web URL, raw GitHub resources (with ready-to-run `curl` commands), and the most useful CLI commands for that topic — no running app or socket required, no auth needed. Run `cmux docs` with no topic for the list.
+
+| Topic | What it covers | Try |
+|---|---|---|
+| `cmux docs api` | CLI/socket API, handle model, windows, workspaces, panes, surfaces | `cmux docs api` |
+| `cmux docs browser` | Browser-panel automation and snapshot-driven web interaction | `cmux docs browser` |
+| `cmux docs agents` | Agent hook integrations, Feed approvals, notifications, session restore | `cmux docs agents` |
+| `cmux docs settings` | `cmux.json` locations, schema, reload flow | `cmux docs settings` |
+| `cmux docs sidebars` | Vibe-coded custom SwiftUI-style sidebars in `~/.config/cmux/sidebars/` (beta) | `cmux docs sidebars` |
+| `cmux docs dock` | Custom right-sidebar terminal controls from `.cmux/dock.json` | `cmux docs dock` |
+| `cmux docs shortcuts` | cmux-owned keyboard shortcuts and two-step chord syntax | `cmux docs shortcuts` |
 
 ## Skills
 
@@ -170,8 +185,13 @@ Useful next to Panecho:
 
 ## In this bundle
 
+- **Claude Code plugin marketplace** — this repo *is* a marketplace. Add it once, then install the skill:
+  ```
+  /plugin marketplace add xxshubhamxx/cmux-ai-agents-bundle
+  /plugin install panecho@panecho
+  ```
 - [`../skills/panecho/`](../skills/panecho/SKILL.md) — drop-in skill that teaches any agent to drive Panecho (with privacy-mode rules)
-- [`../panecho-recipes/`](../panecho-recipes) — 20 copy-paste socket-API + CLI snippets
+- [`../panecho-recipes/`](../panecho-recipes) — 23 copy-paste socket-API + CLI snippets
 
 ---
 

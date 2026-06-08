@@ -1,6 +1,6 @@
 # Panecho Recipes
 
-20 copy-paste, self-contained snippets for the Panecho CLI + socket API. Panecho ships the **same `cmux` CLI** as upstream, so each recipe calls `cmux …` directly and runs verbatim. Each folder is one recipe with a short `README.md` and a runnable script — `recipe.sh` for most, `recipe.py` for the Python client (recipe 14).
+23 copy-paste, self-contained snippets for the Panecho CLI + socket API. Panecho ships the **same `cmux` CLI** as upstream, so each recipe calls `cmux …` directly and runs verbatim. Each folder is one recipe with a short `README.md` and a runnable script — `recipe.sh` for most, `recipe.py` for the Python client (recipe 14).
 
 Browse the list:
 
@@ -26,6 +26,9 @@ Browse the list:
 | 18 | [browser-wait-for-element](./18-browser-wait-for-element)   |
 | 19 | [agent-handoff-notification](./19-agent-handoff-notification) |
 | 20 | [restore-session-on-boot](./20-restore-session-on-boot)     |
+| 21 | [observe-surface-readscreen](./21-observe-surface-readscreen) |
+| 22 | [manage-workspaces](./22-manage-workspaces)                 |
+| 23 | [sync-with-wait-for](./23-sync-with-wait-for)               |
 
 ## Running a recipe
 

@@ -5,7 +5,9 @@ description: Drive the Panecho native macOS terminal app (the privacy-hardened f
 
 # Panecho Control
 
-Panecho is a privacy-hardened fork of cmux — a native macOS terminal app for running multiple AI coding agents in parallel. It ships the **same `cmux` CLI** and the **same Unix-socket JSON-RPC API** (at `$CMUX_SOCKET_PATH`) as upstream, so every command below works verbatim. Only the app bundle (`Panecho.app`, `io.panecho.app`) and URL scheme (`panecho`) are rebranded — and **privacy mode is enabled by default** (see "Privacy Mode — What Changes" below).
+Panecho is a privacy-hardened fork of cmux — a native macOS terminal app for running multiple AI coding agents in parallel. It ships the **same `cmux` CLI** and the **same Unix-socket JSON-RPC API** (default socket `~/.local/state/cmux/cmux.sock`, overridable via `$CMUX_SOCKET_PATH`) as upstream, so every command below works verbatim. Only the app bundle (`Panecho.app`, `io.panecho.app`) and URL scheme (`panecho`) are rebranded — and **privacy mode is enabled by default** (see "Privacy Mode — What Changes" below).
+
+Current release: **panecho-v0.64.14** — Developer ID signed (Browserstack Inc, Team `YQ5FZQ855D`) + notarized + stapled. Latest: https://github.com/xxshubhamxx/cmux-panecho/releases/latest
 
 ## Core Concepts
 
@@ -25,12 +27,23 @@ Handles default to short refs (`workspace:2`, `pane:1`, `surface:7`); UUIDs acce
 
 Injected env vars in every Panecho-spawned terminal: `CMUX_WORKSPACE_ID`, `CMUX_SURFACE_ID`, `CMUX_SOCKET_PATH`, `CMUX_PORT` (env var names keep the `CMUX_` prefix for drop-in compatibility). **Always anchor automation to `CMUX_WORKSPACE_ID`** — the visually focused workspace may not be the agent's caller workspace.
 
+## Connecting to the Socket (Auth)
+
+Socket control commands (`ping`, `notify`, `new-pane`, `send`, `list-*`, `workspace list`, `read-screen`, `events`, etc.) need to authenticate to the control socket. How that happens depends on where the command runs:
+
+- **Inside an app-spawned surface (no password needed).** The surface shell carries `CMUX_SURFACE_ID` / `CMUX_WORKSPACE_ID` / `CMUX_SOCKET_PATH`, so the CLI authenticates **automatically**. This is the normal case for an agent running in a Panecho terminal — just call commands directly.
+- **From an external shell (password required).** A shell that Panecho did not spawn has none of those env vars. You must pass `--password <pw>` or set `CMUX_SOCKET_PASSWORD` (the password saved in **Settings**). Resolution order: `--password` takes precedence, then `CMUX_SOCKET_PASSWORD`, then the saved Settings password.
+- **Symptom of missing auth:** an unauthenticated external command fails with `Failed to write to socket (Broken pipe, errno 32)`. If you see this, you are running outside a surface without a password — supply one rather than retrying.
+- **No auth required:** the bare launcher `cmux <path>` (open a directory in a new workspace), the read-only `cmux <cmd> --help`, and `cmux docs <topic>` all work without any socket connection or password.
+
+The default socket is `~/.local/state/cmux/cmux.sock`; override with `CMUX_SOCKET_PATH`. The active path is also written to `~/.local/state/cmux/last-socket-path`, which is what the CLI auto-discovers. (`cmux auth <status|login|logout>` is a separate concern — it governs remote/web sign-in, which is gated off under privacy mode, not socket access.)
+
 ## Fast Start — Topology
 
 ```bash
-cmux identify --json                              # who am I (window/workspace/pane/surface)
+cmux identify --json                              # server identity + caller context (window/workspace/pane/surface)
 cmux tree                                         # full hierarchy
-cmux list-workspaces --json
+cmux workspace list --json                                 # canonical; `list-workspaces` is a still-supported alias
 cmux list-panes --workspace "$CMUX_WORKSPACE_ID"
 cmux list-pane-surfaces --pane pane:1                       # surfaces (tabs) within a pane
 
@@ -50,6 +63,23 @@ cmux send "echo hi\n"                                       # focused terminal
 cmux send-key "ctrl+c"                                       # enter|tab|esc|backspace|arrows|ctrl+x|shift+tab
 cmux send --surface surface:7 "npm run build\n"              # specific surface
 cmux send-key --surface surface:7 enter
+```
+
+## Read Terminal Output
+
+```bash
+cmux read-screen                                            # visible viewport of caller surface as plain text
+cmux read-screen --surface surface:2 --scrollback --lines 200   # last 200 lines incl. scrollback
+cmux capture-pane --surface surface:1 --scrollback --lines 200  # tmux-compatible alias for read-screen
+```
+
+## Wait & Watch (sync + events)
+
+```bash
+cmux wait-for build-done --timeout 60                       # block until token signaled (default 30s)
+cmux wait-for -S build-done                                 # signal the token (e.g. from another surface)
+cmux events --category notification                         # stream cmux events as newline-delimited JSON
+cmux events --cursor-file ~/.cache/cmux/events.seq --reconnect   # durable resume across reconnects
 ```
 
 ## Notifications & Sidebar Metadata
@@ -152,7 +182,7 @@ Native session-resume supported for: Claude Code, Codex, Grok, OpenCode, Pi, Amp
 
 ## Socket API (advanced)
 
-The socket path is injected into every Panecho surface as `$CMUX_SOCKET_PATH`. Panecho keeps it at `~/Library/Application Support/cmux/cmux-<uid>.sock` (NOT the legacy upstream `/tmp/cmux.sock`); the live path is also written to `~/Library/Application Support/cmux/last-socket-path`, which is what the `cmux` CLI auto-discovers. Unix socket, JSON-RPC v2 — use for tight loops where subprocess spawn cost matters; otherwise prefer the CLI.
+The socket path is injected into every Panecho surface as `$CMUX_SOCKET_PATH`. Panecho keeps it at the XDG state path `~/.local/state/cmux/cmux.sock` (NOT the legacy upstream `/tmp/cmux.sock`); the live path is also written to `~/.local/state/cmux/last-socket-path`, which is what the `cmux` CLI auto-discovers. Unix socket, JSON-RPC v2 — use for tight loops where subprocess spawn cost matters; otherwise prefer the CLI. See "Connecting to the Socket (Auth)" above for the in-surface vs. external (`--password` / `CMUX_SOCKET_PASSWORD`) auth model.
 
 ```bash
 echo '{"id":"1","method":"workspace.list","params":{}}' | nc -U "$CMUX_SOCKET_PATH"
@@ -160,14 +190,14 @@ echo '{"id":"1","method":"workspace.list","params":{}}' | nc -U "$CMUX_SOCKET_PA
 
 Method prefixes: `system.*`, `window.*`, `workspace.*`, `pane.*`, `surface.*`, `notification.*`, `browser.*`. Enumerate available methods in the current build with `cmux capabilities --json`.
 
-Access modes: `cmuxOnly` (default — only Panecho-spawned processes), `automation` (any local process), `password`, `allowAll` (unsafe). If you hit `Failed to connect to socket` / `Broken pipe`, you're likely an external process under `cmuxOnly` — switch mode in Settings > Automation or run from inside a Panecho terminal.
+Access modes: `cmuxOnly` (default — only Panecho-spawned processes), `automation` (any local process), `password`, `allowAll` (unsafe). If a write to the socket fails with `Failed to write to socket (Broken pipe, errno 32)`, you're an unauthenticated external process — run from inside a Panecho surface (auto-auth) or pass `--password` / set `CMUX_SOCKET_PASSWORD` (see "Connecting to the Socket (Auth)").
 
 ## Critical Rules — Non-Disruptive Automation
 
 These rules prevent agents from yanking the user's focus:
 
 1. **Anchor to `CMUX_WORKSPACE_ID`.** Never assume the visually focused workspace is the target.
-2. **Never call focus-changing verbs speculatively.** `select-workspace`, `focus-pane`, `focus-panel`, `focus-surface` only on explicit user request. Pass `--focus false` whenever available.
+2. **Never call focus-changing verbs speculatively.** `select-workspace`, `focus-pane`, `focus-panel` only on explicit user request. Pass `--focus false` whenever available.
 3. **Build layout additively in one call.** `cmux new-pane --type … --focus false` beats create-then-move-then-focus chains.
 4. **Right-side helper pane pattern.** Reuse an existing non-caller helper pane if present; otherwise create exactly one right-side pane.
 5. **Never send input to surfaces you don't own.** Only target surfaces in the caller's workspace unless the user explicitly asks for cross-workspace routing.
@@ -176,7 +206,7 @@ These rules prevent agents from yanking the user's focus:
 
 ## Common Pitfalls
 
-- **Socket connection failures from external processes** → default `cmuxOnly` mode; either run inside a Panecho terminal or change socket mode.
+- **Socket failures from external processes** → `Failed to write to socket (Broken pipe, errno 32)` means unauthenticated under default `cmuxOnly`; run inside a Panecho surface (auto-auth) or pass `--password` / `CMUX_SOCKET_PASSWORD`.
 - **macOS only.** No Linux/Windows port. Apple Silicon (arm64) builds.
 - **WKWebView ≠ CDP.** Don't expect Playwright-equivalent network mocking or viewport emulation.
 - **Privacy mode ≠ no network.** Browser/SSH/child processes still reach the network; only the app's own telemetry/update `URLSession` calls are blocked.
