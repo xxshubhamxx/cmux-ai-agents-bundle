@@ -31,7 +31,7 @@ Contributions welcome — open a PR or an issue.
 ## Panecho (this fork)
 
 - [GitHub: xxshubhamxx/cmux-panecho](https://github.com/xxshubhamxx/cmux-panecho) — the Panecho fork source
-- [Latest release](https://github.com/xxshubhamxx/cmux-panecho/releases/latest) — current: [`panecho-v0.64.14`](https://github.com/xxshubhamxx/cmux-panecho/releases/tag/panecho-v0.64.14); `panecho-macos.zip` (Apple Silicon, arm64), Developer ID signed (Browserstack Inc, Team `YQ5FZQ855D`), notarized + stapled
+- [Latest release](https://github.com/xxshubhamxx/cmux-panecho/releases/latest) — current: [`panecho-v0.64.15`](https://github.com/xxshubhamxx/cmux-panecho/releases/tag/panecho-v0.64.15); `panecho-macos.zip` (Apple Silicon, arm64), Developer ID signed (Browserstack Inc, Team `YQ5FZQ855D`), notarized + stapled
 - [All releases](https://github.com/xxshubhamxx/cmux-panecho/releases) — versioned (`panecho-vX.Y.Z`) + rolling `panecho-nightly`
 - Identity: app `Panecho.app`, bundle id `io.panecho.app`, URL scheme `panecho`
 - CLI: still `cmux` (drop-in compatible) — `cmux version` reports the upstream base version + Panecho commit

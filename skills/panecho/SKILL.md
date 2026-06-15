@@ -7,7 +7,7 @@ description: Drive the Panecho native macOS terminal app (the privacy-hardened f
 
 Panecho is a privacy-hardened fork of cmux — a native macOS terminal app for running multiple AI coding agents in parallel. It ships the **same `cmux` CLI** and the **same Unix-socket JSON-RPC API** (default socket `~/.local/state/cmux/cmux.sock`, overridable via `$CMUX_SOCKET_PATH`) as upstream, so every command below works verbatim. Only the app bundle (`Panecho.app`, `io.panecho.app`) and URL scheme (`panecho`) are rebranded — and **privacy mode is enabled by default** (see "Privacy Mode — What Changes" below).
 
-Current release: **panecho-v0.64.14** — Developer ID signed (Browserstack Inc, Team `YQ5FZQ855D`) + notarized + stapled. Latest: https://github.com/xxshubhamxx/cmux-panecho/releases/latest
+Current release: **panecho-v0.64.15** — Developer ID signed (Browserstack Inc, Team `YQ5FZQ855D`) + notarized + stapled. Latest: https://github.com/xxshubhamxx/cmux-panecho/releases/latest
 
 ## Core Concepts
 
