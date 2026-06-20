@@ -76,10 +76,10 @@ ditto -x -k ~/Downloads/panecho-macos.zip /tmp/panecho && \
 # 3. Symlink the CLI (the binary is still named `cmux`)
 sudo ln -sf "/Applications/Panecho.app/Contents/Resources/bin/cmux" /usr/local/bin/cmux
 
-cmux version    # -> cmux 0.64.16.1 (97) [<commit>]
+cmux version    # -> cmux 0.64.16.2 (98) [<commit>]
 ```
 
-> Requires macOS 14.0+ (Apple Silicon, arm64). The current release (`panecho-v0.64.16.1`) is Developer ID-signed (Browserstack Inc), notarized, and stapled, so Gatekeeper opens it without the "unidentified developer" block.
+> Requires macOS 14.0+ (Apple Silicon, arm64). The current release (`panecho-v0.64.16.2`) is Developer ID-signed (Browserstack Inc), notarized, and stapled, so Gatekeeper opens it without the "unidentified developer" block.
 
 ---
 
