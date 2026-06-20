@@ -31,7 +31,7 @@ Contributions welcome — open a PR or an issue.
 ## Panecho (this fork)
 
 - [GitHub: xxshubhamxx/cmux-panecho](https://github.com/xxshubhamxx/cmux-panecho) — the Panecho fork source
-- [Latest release](https://github.com/xxshubhamxx/cmux-panecho/releases/latest) — current: [`panecho-v0.64.15`](https://github.com/xxshubhamxx/cmux-panecho/releases/tag/panecho-v0.64.15); `panecho-macos.zip` (Apple Silicon, arm64), Developer ID signed (Browserstack Inc, Team `YQ5FZQ855D`), notarized + stapled
+- [Latest release](https://github.com/xxshubhamxx/cmux-panecho/releases/latest) — current: [`panecho-v0.64.16.1`](https://github.com/xxshubhamxx/cmux-panecho/releases/tag/panecho-v0.64.16.1); `panecho-macos.zip` (Apple Silicon, arm64), Developer ID signed (Browserstack Inc, Team `YQ5FZQ855D`), notarized + stapled
 - [All releases](https://github.com/xxshubhamxx/cmux-panecho/releases) — versioned (`panecho-vX.Y.Z`) + rolling `panecho-nightly`
 - Identity: app `Panecho.app`, bundle id `io.panecho.app`, URL scheme `panecho`
 - CLI: still `cmux` (drop-in compatible) — `cmux version` reports the upstream base version + Panecho commit
@@ -73,7 +73,7 @@ Panecho is based on cmux; these upstream resources describe the shared engine an
 - [cmux.com/docs/skills](https://cmux.com/docs/skills) — skills system
 - [cmux.com/docs/custom-commands](https://cmux.com/docs/custom-commands) — actions, layouts, surface definitions
 - [GitHub: manaflow-ai/cmux](https://github.com/manaflow-ai/cmux) — upstream source repo
-- [GitHub: CHANGELOG.md](https://raw.githubusercontent.com/manaflow-ai/cmux/main/CHANGELOG.md) — full version history
+- [GitHub: CHANGELOG.md](https://raw.githubusercontent.com/xxshubhamxx/cmux-panecho/main/CHANGELOG.md) — full version history
 - [DeepWiki: manaflow-ai/cmux](https://deepwiki.com/manaflow-ai/cmux) — auto-generated architecture overview
 - [Mintlify socket-api reference](https://manaflow-ai-cmux.mintlify.app/automation/socket-api) — full JSON-RPC method list
 
@@ -93,15 +93,15 @@ Panecho ships canonical docs offline. `cmux docs <topic>` prints the web URL, ra
 
 ## Skills
 
-Install upstream skills (they apply to Panecho too): `npx skills add manaflow-ai/cmux -g -y`. Or install this bundle's Panecho-tuned skill ([`../skills/panecho`](../skills/panecho/SKILL.md)) — in Claude Code: `/plugin marketplace add xxshubhamxx/cmux-ai-agents-bundle` then `/plugin install panecho@panecho`. It adds the privacy-mode rules the upstream skill omits.
+Install upstream skills (they apply to Panecho too): `npx skills add xxshubhamxx/cmux-panecho -g -y`. Or install this bundle's Panecho-tuned skill ([`../skills/panecho`](../skills/panecho/SKILL.md)) — in Claude Code: `/plugin marketplace add xxshubhamxx/cmux-ai-agents-bundle` then `/plugin install panecho@panecho`. It adds the privacy-mode rules the upstream skill omits.
 
-- [cmux Core](https://raw.githubusercontent.com/manaflow-ai/cmux/main/skills/cmux/SKILL.md) — windows, workspaces, panes, surfaces, focus, moves
-- [cmux Workspace](https://raw.githubusercontent.com/manaflow-ai/cmux/main/skills/cmux-workspace/SKILL.md) — caller-workspace-scoped automation, non-disruptive rules
-- [cmux Settings](https://raw.githubusercontent.com/manaflow-ai/cmux/main/skills/cmux-settings/SKILL.md) — safe `cmux.json` edits
+- [cmux Core](https://raw.githubusercontent.com/xxshubhamxx/cmux-panecho/main/skills/cmux/SKILL.md) — windows, workspaces, panes, surfaces, focus, moves
+- [cmux Workspace](https://raw.githubusercontent.com/xxshubhamxx/cmux-panecho/main/skills/cmux-workspace/SKILL.md) — caller-workspace-scoped automation, non-disruptive rules
+- [cmux Settings](https://raw.githubusercontent.com/xxshubhamxx/cmux-panecho/main/skills/cmux-settings/SKILL.md) — safe `cmux.json` edits
 - [cmux Customization](https://github.com/manaflow-ai/cmux/tree/main/skills/cmux-customization) — actions, layouts, tab buttons
 - [cmux Diagnostics](https://github.com/manaflow-ai/cmux/tree/main/skills/cmux-diagnostics) — CLI/socket/hooks health checks
-- [cmux Browser](https://raw.githubusercontent.com/manaflow-ai/cmux/main/skills/cmux-browser/SKILL.md) — WKWebView browser automation
-- [cmux Markdown Viewer](https://raw.githubusercontent.com/manaflow-ai/cmux/main/skills/cmux-markdown/SKILL.md) — live-watching markdown panel
+- [cmux Browser](https://raw.githubusercontent.com/xxshubhamxx/cmux-panecho/main/skills/cmux-browser/SKILL.md) — WKWebView browser automation
+- [cmux Markdown Viewer](https://raw.githubusercontent.com/xxshubhamxx/cmux-panecho/main/skills/cmux-markdown/SKILL.md) — live-watching markdown panel
 
 ## Supported AI agents
 
@@ -138,14 +138,14 @@ Install all detected hooks at once: `cmux hooks setup`
 
 Panecho includes the same embedded WKWebView browser with a scriptable API (ported from agent-browser).
 
-- [Browser commands reference](https://raw.githubusercontent.com/manaflow-ai/cmux/main/skills/cmux-browser/references/commands.md)
-- [Browser skill](https://raw.githubusercontent.com/manaflow-ai/cmux/main/skills/cmux-browser/SKILL.md)
+- [Browser commands reference](https://raw.githubusercontent.com/xxshubhamxx/cmux-panecho/main/skills/cmux-browser/references/commands.md)
+- [Browser skill](https://raw.githubusercontent.com/xxshubhamxx/cmux-panecho/main/skills/cmux-browser/SKILL.md)
 - Known WKWebView limitations (return `not_supported`): viewport emulation, offline mode, trace recording, network interception, raw input injection
 - Privacy note: WKWebView page loads are **not** gated by the egress guard — browser surfaces reach the network normally.
 
 ## Configuration
 
-- [cmux.json schema](https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux.schema.json) (Panecho tracks the upstream schema)
+- [cmux.json schema](https://raw.githubusercontent.com/xxshubhamxx/cmux-panecho/main/web/data/cmux.schema.json) (Panecho tracks the upstream schema)
 - Config locations:
   - `~/.config/cmux/cmux.json` (canonical — path keeps the `cmux` name for drop-in compatibility)
   - `~/.config/ghostty/config` (terminal rendering, font, theme)

@@ -7,7 +7,7 @@ description: Drive the Panecho native macOS terminal app (the privacy-hardened f
 
 Panecho is a privacy-hardened fork of cmux — a native macOS terminal app for running multiple AI coding agents in parallel. It ships the **same `cmux` CLI** and the **same Unix-socket JSON-RPC API** (default socket `~/.local/state/cmux/cmux.sock`, overridable via `$CMUX_SOCKET_PATH`) as upstream, so every command below works verbatim. Only the app bundle (`Panecho.app`, `io.panecho.app`) and URL scheme (`panecho`) are rebranded — and **privacy mode is enabled by default** (see "Privacy Mode — What Changes" below).
 
-Current release: **panecho-v0.64.15** — Developer ID signed (Browserstack Inc, Team `YQ5FZQ855D`) + notarized + stapled. Latest: https://github.com/xxshubhamxx/cmux-panecho/releases/latest
+Current release: **panecho-v0.64.16.1** — Developer ID signed (Browserstack Inc, Team `YQ5FZQ855D`) + notarized + stapled. Latest: https://github.com/xxshubhamxx/cmux-panecho/releases/latest
 
 ## Core Concepts
 
@@ -145,7 +145,7 @@ Locations:
 - Panecho settings: `~/.config/cmux/cmux.json` (canonical — path keeps the `cmux` name for drop-in compatibility). Project-local override: `.cmux/cmux.json` or `./cmux.json`.
 - Terminal rendering (font, cursor, theme, scrollback, opacity, blur): `~/.config/ghostty/config` — NOT cmux.json.
 
-Before editing `cmux.json`, copy it to a timestamped `.bak` next to it so the user can revert. Schema (tracks upstream cmux, identical for Panecho): `https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux.schema.json`.
+Before editing `cmux.json`, copy it to a timestamped `.bak` next to it so the user can revert. Schema (tracks upstream cmux, identical for Panecho): `https://raw.githubusercontent.com/xxshubhamxx/cmux-panecho/main/web/data/cmux.schema.json`.
 
 ## Privacy Mode — What Changes
 
@@ -175,7 +175,7 @@ sudo ln -sf /Applications/Panecho.app/Contents/Resources/bin/cmux /usr/local/bin
 
 cmux hooks setup                                             # all detected agents
 cmux hooks setup codex|grok|antigravity|opencode             # specific agent
-npx skills add manaflow-ai/cmux -g -y                        # upstream cmux skills (apply to Panecho too)
+npx skills add xxshubhamxx/cmux-panecho -g -y                        # upstream cmux skills (apply to Panecho too)
 ```
 
 Native session-resume supported for: Claude Code, Codex, Grok, OpenCode, Pi, Amp, Cursor CLI, Gemini, Antigravity, Rovo Dev, Hermes, Copilot, CodeBuddy, Factory, Qoder.
