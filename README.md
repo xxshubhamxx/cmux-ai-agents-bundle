@@ -54,7 +54,7 @@ mkdir -p .claude/skills/panecho
 cp cmux-ai-agents-bundle/skills/panecho/SKILL.md .claude/skills/panecho/SKILL.md
 ```
 
-Other agents that read a `skills/` directory (Hermes, etc.): drop `skills/panecho/SKILL.md` into their skills folder. The upstream cmux skills also work against Panecho (same CLI/socket): `npx skills add xxshubhamxx/cmux-panecho -g -y` — this bundle's skill adds the privacy-mode rules the upstream one doesn't cover.
+Other agents that read a `skills/` directory (Hermes, etc.): drop `skills/panecho/SKILL.md` into their skills folder. The first-party cmux skills also work against Panecho (same CLI/socket): `npx skills add manaflow-ai/cmux-skills -g --all` — this bundle's skill adds the privacy-mode rules the upstream ones don't cover (notably that `cmux-freestyle` cloud VMs are gated off in a privacy build).
 
 > After adding a skill by hand, restart Claude Code (or run `/reload-plugins`) so it's picked up.
 

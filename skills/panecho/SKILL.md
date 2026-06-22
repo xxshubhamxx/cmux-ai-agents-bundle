@@ -175,8 +175,19 @@ sudo ln -sf /Applications/Panecho.app/Contents/Resources/bin/cmux /usr/local/bin
 
 cmux hooks setup                                             # all detected agents
 cmux hooks setup codex|grok|antigravity|opencode             # specific agent
-npx skills add xxshubhamxx/cmux-panecho -g -y                        # upstream cmux skills (apply to Panecho too)
+npx skills add manaflow-ai/cmux-skills -g --all              # first-party cmux skills (8; apply to Panecho)
 ```
+
+## Upstream skills & Panecho deltas
+
+The canonical user skills live in [`manaflow-ai/cmux-skills`](https://github.com/manaflow-ai/cmux-skills) (8: `cmux-cli`, `cmux-config`, `cmux-ref`, `cmux-sidebar-builder`, `cmux-workspace`, `cmux-browser`, `cmux-artifact`, `cmux-freestyle`). Install with `npx skills add manaflow-ai/cmux-skills -g --all`. They are written against upstream cmux and apply to Panecho unchanged except:
+
+- **`cmux-freestyle` does NOT work in a Panecho privacy build.** Cloud VM provisioning is gated off at the `VMClient` layer and all non-loopback egress is fail-closed; `cmux vm …` returns a privacy-mode error. Treat the whole skill as out of scope.
+- **`cmux-config`:** Panecho's `cmux.json` `$schema` and fetchable `cmux docs` URLs are pinned to the fork at tag `panecho-v0.64.16.2`, not to manaflow.
+- **`cmux-browser`:** cookie import and JS `eval` are user/socket-invoked (not autonomous), data stores are per-profile isolated, and WKWebView page loads are not egress-guarded — so browser automation works under privacy mode.
+- **Socket-driven skills** (`cmux-cli`, `cmux-ref`, `cmux-workspace`, `cmux-sidebar-builder`, `cmux-artifact`): in privacy mode `allowAll` is force-downgraded to `cmuxOnly` and the socket is bound to same-UID / process-lineage local peers.
+
+These deltas were verified at the code / CLI-contract level against the fork at `panecho-v0.64.16.2`, **not** runtime-verified (the control socket is process-lineage-gated and can't be driven from an external shell).
 
 Native session-resume supported for: Claude Code, Codex, Grok, OpenCode, Pi, Amp, Cursor CLI, Gemini, Antigravity, Rovo Dev, Hermes, Copilot, CodeBuddy, Factory, Qoder.
 

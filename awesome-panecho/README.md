@@ -93,15 +93,27 @@ Panecho ships canonical docs offline. `cmux docs <topic>` prints the web URL, ra
 
 ## Skills
 
-Install upstream skills (they apply to Panecho too): `npx skills add xxshubhamxx/cmux-panecho -g -y`. Or install this bundle's Panecho-tuned skill ([`../skills/panecho`](../skills/panecho/SKILL.md)) — in Claude Code: `/plugin marketplace add xxshubhamxx/cmux-ai-agents-bundle` then `/plugin install panecho@panecho`. It adds the privacy-mode rules the upstream skill omits.
+The canonical user-facing skills live in the first-party repo [`manaflow-ai/cmux-skills`](https://github.com/manaflow-ai/cmux-skills) (8 skills). They are written against upstream cmux and apply to Panecho too — the CLI and socket contract are the same — with the Panecho deltas noted per skill below. Install all of them globally:
 
-- [cmux Core](https://raw.githubusercontent.com/xxshubhamxx/cmux-panecho/panecho-v0.64.16.2/skills/cmux/SKILL.md) — windows, workspaces, panes, surfaces, focus, moves
-- [cmux Workspace](https://raw.githubusercontent.com/xxshubhamxx/cmux-panecho/panecho-v0.64.16.2/skills/cmux-workspace/SKILL.md) — caller-workspace-scoped automation, non-disruptive rules
-- [cmux Settings](https://raw.githubusercontent.com/xxshubhamxx/cmux-panecho/panecho-v0.64.16.2/skills/cmux-settings/SKILL.md) — safe `cmux.json` edits
-- [cmux Customization](https://github.com/manaflow-ai/cmux/tree/main/skills/cmux-customization) — actions, layouts, tab buttons
-- [cmux Diagnostics](https://github.com/manaflow-ai/cmux/tree/main/skills/cmux-diagnostics) — CLI/socket/hooks health checks
-- [cmux Browser](https://raw.githubusercontent.com/xxshubhamxx/cmux-panecho/panecho-v0.64.16.2/skills/cmux-browser/SKILL.md) — WKWebView browser automation
-- [cmux Markdown Viewer](https://raw.githubusercontent.com/xxshubhamxx/cmux-panecho/panecho-v0.64.16.2/skills/cmux-markdown/SKILL.md) — live-watching markdown panel
+```bash
+npx skills add manaflow-ai/cmux-skills -g --all      # all 8, every agent on this machine
+npx skills add manaflow-ai/cmux-skills --list        # inspect without installing
+```
+
+> The fork (`xxshubhamxx/cmux-panecho`) ships cmux's *developer/contributor* skills under `skills/`, not these user skills, and has no install manifest — install from `manaflow-ai/cmux-skills`, not the fork.
+
+For the Panecho privacy-mode rules the upstream skills don't cover, also install this bundle's drop-in skill ([`../skills/panecho`](../skills/panecho/SKILL.md)) — in Claude Code: `/plugin marketplace add xxshubhamxx/cmux-ai-agents-bundle` then `/plugin install panecho@panecho`.
+
+| Skill | What it does | Panecho note |
+|---|---|---|
+| [`cmux-cli`](https://github.com/manaflow-ai/cmux-skills/blob/main/skills/cmux-cli/SKILL.md) | The `cmux` CLI: socket commands, workspaces, panes, surfaces, browser, hooks, feed, settings, automation. | Applies. In privacy mode the socket's `allowAll` is force-downgraded to `cmuxOnly`; commands are bound to same-UID/process-lineage local peers. |
+| [`cmux-config`](https://github.com/manaflow-ai/cmux-skills/blob/main/skills/cmux-config/SKILL.md) | Edit `~/.config/cmux/cmux.json`: typed settings, customization (tab buttons, menus, actions, right sidebar), workspace groups. | Applies. Panecho's `$schema` and fetchable `cmux docs` URLs are pinned to the **fork** at tag `panecho-v0.64.16.2`, not manaflow. |
+| [`cmux-ref`](https://github.com/manaflow-ai/cmux-skills/blob/main/skills/cmux-ref/SKILL.md) | Interpret pasted workspace/pane/surface/window refs or UUIDs as explicit target context. | Applies (same socket downgrade caveat as `cmux-cli`). |
+| [`cmux-sidebar-builder`](https://github.com/manaflow-ai/cmux-skills/blob/main/skills/cmux-sidebar-builder/SKILL.md) | Build left-sidebar custom views via cmux's runtime SwiftUI-style interpreter. | Applies (same socket caveat). |
+| [`cmux-workspace`](https://github.com/manaflow-ai/cmux-skills/blob/main/skills/cmux-workspace/SKILL.md) | Work inside the current workspace: caller surface, panes, surfaces, tagged reloads, non-interfering automation. | Applies (same socket caveat). |
+| [`cmux-browser`](https://github.com/manaflow-ai/cmux-skills/blob/main/skills/cmux-browser/SKILL.md) | Drive browser surfaces: snapshot refs, DOM actions, waits, screenshots, cookies, storage, tabs, downloads, console, errors. | Applies. Cookie import + JS `eval` are accepted (user/socket-invoked, not autonomous); data stores are isolated per profile. WKWebView page loads are **not** egress-guarded, so automation works in privacy mode. |
+| [`cmux-artifact`](https://github.com/manaflow-ai/cmux-skills/blob/main/skills/cmux-artifact/SKILL.md) | Build durable HTML walkthrough/evidence/demo artifacts and open them in the workspace. | Applies (same socket caveat). |
+| [`cmux-freestyle`](https://github.com/manaflow-ai/cmux-skills/blob/main/skills/cmux-freestyle/SKILL.md) | Bring up cmux Cloud VMs on your own Freestyle account by minting a `FREESTYLE_SANDBOX_SNAPSHOT`. | **Not functional in a Panecho privacy build.** Cloud VM provisioning is gated off at the `VMClient` layer and all non-loopback egress is fail-closed; `cmux vm …` returns a privacy-mode error. |
 
 ## Supported AI agents
 
@@ -138,8 +150,8 @@ Install all detected hooks at once: `cmux hooks setup`
 
 Panecho includes the same embedded WKWebView browser with a scriptable API (ported from agent-browser).
 
-- [Browser commands reference](https://raw.githubusercontent.com/xxshubhamxx/cmux-panecho/panecho-v0.64.16.2/skills/cmux-browser/references/commands.md)
-- [Browser skill](https://raw.githubusercontent.com/xxshubhamxx/cmux-panecho/panecho-v0.64.16.2/skills/cmux-browser/SKILL.md)
+- [Browser commands reference](https://github.com/manaflow-ai/cmux-skills/blob/main/skills/cmux-browser/references/commands.md)
+- [Browser skill](https://github.com/manaflow-ai/cmux-skills/blob/main/skills/cmux-browser/SKILL.md)
 - Known WKWebView limitations (return `not_supported`): viewport emulation, offline mode, trace recording, network interception, raw input injection
 - Privacy note: WKWebView page loads are **not** gated by the egress guard — browser surfaces reach the network normally.
 
